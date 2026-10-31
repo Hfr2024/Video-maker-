@@ -1,0 +1,1920 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صانع الفيديو الذكي - AI Video Maker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --primary-dark: #5A52D5;
+            --secondary: #FF6B6B;
+            --accent: #4ECDC4;
+            --dark: #1a1a2e;
+            --darker: #16213e;
+            --card-bg: #0f3460;
+            --text-light: #e0e0e0;
+            --text-white: #ffffff;
+            --gradient-1: linear-gradient(135deg, #6C63FF 0%, #4ECDC4 100%);
+            --gradient-2: linear-gradient(135deg, #FF6B6B 0%, #ee5a24 100%);
+            --shadow: 0 10px 40px rgba(0,0,0,0.3);
+            --radius: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--darker) 0%, var(--card-bg) 100%);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--primary);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo i {
+            font-size: 32px;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 900;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Cairo';
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(108, 99, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        /* Tabs Navigation */
+        .tabs-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: 'Cairo';
+            font-size: 16px;
+            font-weight: 700;
+            background: var(--darker);
+            color: var(--text-light);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tab-btn.active {
+            background: var(--gradient-1);
+            color: white;
+            border-color: var(--accent);
+            box-shadow: 0 5px 25px rgba(108, 99, 255, 0.4);
+        }
+
+        .tab-btn:hover:not(.active) {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background: linear-gradient(145deg, var(--darker), var(--card-bg));
+            border-radius: var(--radius);
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(108, 99, 255, 0.2);
+        }
+
+        .card-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-title i {
+            color: var(--accent);
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-white);
+        }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid rgba(108, 99, 255, 0.3);
+            border-radius: 12px;
+            background: rgba(0,0,0,0.3);
+            color: var(--text-white);
+            font-family: 'Cairo';
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(108, 99, 255, 0.3);
+        }
+
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .form-select option {
+            background: var(--darker);
+            color: var(--text-white);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'Cairo';
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-generate {
+            background: var(--gradient-1);
+            color: white;
+            font-size: 18px;
+            padding: 16px 40px;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(108, 99, 255, 0.5);
+        }
+
+        .btn-download {
+            background: var(--gradient-2);
+            color: white;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(255, 107, 107, 0.5);
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #4ECDC4, #44bd9e);
+            color: white;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(78, 205, 196, 0.5);
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            color: white;
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 3px dashed var(--primary);
+            border-radius: var(--radius);
+            padding: 50px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(108, 99, 255, 0.05);
+        }
+
+        .upload-area:hover {
+            background: rgba(108, 99, 255, 0.1);
+            border-color: var(--accent);
+        }
+
+        .upload-area i {
+            font-size: 60px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .upload-area p {
+            font-size: 18px;
+            color: var(--text-light);
+        }
+
+        .upload-area input[type="file"] {
+            display: none;
+        }
+
+        /* Image Preview */
+        .image-preview {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 12px;
+            border: 2px solid var(--primary);
+        }
+
+        /* Prompt Library */
+        .prompts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .prompt-card {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(108, 99, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .prompt-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(108, 99, 255, 0.2);
+        }
+
+        .prompt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .prompt-category {
+            background: var(--gradient-1);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .prompt-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .prompt-actions button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Cairo';
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .prompt-text {
+            background: rgba(0,0,0,0.4);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text-light);
+            min-height: 80px;
+        }
+
+        .prompt-text textarea {
+            width: 100%;
+            min-height: 80px;
+            background: transparent;
+            border: none;
+            color: var(--text-light);
+            font-family: 'Cairo';
+            font-size: 14px;
+            line-height: 1.8;
+            resize: vertical;
+        }
+
+        /* Music Library */
+        .music-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .music-card {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(78, 205, 196, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .music-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        .music-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .music-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+        }
+
+        .music-details h4 {
+            color: var(--text-white);
+            margin-bottom: 4px;
+        }
+
+        .music-details p {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .music-player {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .play-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-1);
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .volume-control {
+            width: 80px;
+            accent-color: var(--primary);
+        }
+
+        /* Video Preview */
+        .video-preview-container {
+            background: rgba(0,0,0,0.5);
+            border-radius: var(--radius);
+            padding: 30px;
+            text-align: center;
+        }
+
+        .video-canvas {
+            width: 100%;
+            max-width: 800px;
+            height: 450px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid var(--primary);
+        }
+
+        .video-content {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .video-content h2 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .video-content p {
+            font-size: 18px;
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+
+        .video-timer {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .timer-display {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .video-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .control-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Cairo';
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        /* Duration Selector */
+        .duration-selector {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .duration-option {
+            padding: 12px 24px;
+            border: 2px solid rgba(108, 99, 255, 0.3);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: transparent;
+            color: var(--text-light);
+            font-family: 'Cairo';
+            font-weight: 600;
+        }
+
+        .duration-option.active {
+            background: var(--gradient-1);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        .duration-option:hover:not(.active) {
+            border-color: var(--primary);
+        }
+
+        /* Saved Videos */
+        .saved-videos-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .saved-video-item {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(108, 99, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .saved-video-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .saved-video-thumb {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, var(--darker), var(--card-bg));
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: var(--primary);
+        }
+
+        .saved-video-info h4 {
+            margin-bottom: 8px;
+            color: var(--text-white);
+        }
+
+        .saved-video-info p {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 12px;
+        }
+
+        /* Settings Panel */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 26px;
+            transition: 0.3s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        .toggle-switch input:checked + .slider {
+            background-color: var(--primary);
+        }
+
+        .toggle-switch input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        /* Loading Animation */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(108, 99, 255, 0.3);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            font-size: 18px;
+            color: var(--text-light);
+        }
+
+        /* Progress Steps */
+        .progress-steps {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(108, 99, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--text-light);
+            border: 2px solid rgba(108, 99, 255, 0.3);
+        }
+
+        .step.active .step-circle {
+            background: var(--gradient-1);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .step.completed .step-circle {
+            background: var(--accent);
+            color: white;
+        }
+
+        .step-label {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .main-container {
+                padding: 15px;
+            }
+
+            .tabs-nav {
+                gap: 5px;
+            }
+
+            .tab-btn {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+
+            .prompts-grid,
+            .music-grid,
+            .saved-videos-list {
+                grid-template-columns: 1fr;
+            }
+
+            .video-canvas {
+                height: 250px;
+            }
+
+            .progress-steps {
+                gap: 15px;
+            }
+
+            .step-label {
+                font-size: 11px;
+            }
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--darker);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--gradient-1);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 10000;
+            transition: transform 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .badge-free {
+            background: linear-gradient(135deg, #4ECDC4, #44bd9e);
+            color: white;
+        }
+
+        .badge-pro {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+        }
+
+        /* Category Filter */
+        .category-filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid rgba(108, 99, 255, 0.3);
+            border-radius: 20px;
+            background: transparent;
+            color: var(--text-light);
+            cursor: pointer;
+            font-family: 'Cairo';
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active,
+        .filter-btn:hover {
+            background: var(--gradient-1);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-state i {
+            font-size: 60px;
+            color: rgba(108, 99, 255, 0.3);
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <i class="fas fa-video"></i>
+            <h1>صانع الفيديو الذكي</h1>
+        </div>
+        <div class="nav-buttons">
+            <button class="nav-btn btn-secondary" onclick="showToast('تم الحفظ بنجاح!')">
+                <i class="fas fa-save"></i>
+                <span>حفظ</span>
+            </button>
+            <button class="nav-btn btn-primary" onclick="downloadVideo()">
+                <i class="fas fa-download"></i>
+                <span>تحميل</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+
+        <!-- Tabs Navigation -->
+        <div class="tabs-nav">
+            <button class="tab-btn active" onclick="switchTab('create')">
+                <i class="fas fa-magic"></i>
+                إنشاء فيديو
+            </button>
+            <button class="tab-btn" onclick="switchTab('prompts')">
+                <i class="fas fa-comment-dots"></i>
+                مكتبة البرومبتات
+            </button>
+            <button class="tab-btn" onclick="switchTab('music')">
+                <i class="fas fa-music"></i>
+                الموسيقى التصويرية
+            </button>
+            <button class="tab-btn" onclick="switchTab('saved')">
+                <i class="fas fa-film"></i>
+                الفيديوهات المحفوظة
+            </button>
+            <button class="tab-btn" onclick="switchTab('settings')">
+                <i class="fas fa-cog"></i>
+                الإعدادات
+            </button>
+        </div>
+
+        <!-- Tab 1: Create Video -->
+        <div id="create" class="tab-content active">
+            
+            <!-- Progress Steps -->
+            <div class="progress-steps">
+                <div class="step active" id="step1">
+                    <div class="step-circle">1</div>
+                    <span class="step-label">النص/الصورة</span>
+                </div>
+                <div class="step" id="step2">
+                    <div class="step-circle">2</div>
+                    <span class="step-label">الإعدادات</span>
+                </div>
+                <div class="step" id="step3">
+                    <div class="step-circle">3</div>
+                    <span class="step-label">الموسيقى</span>
+                </div>
+                <div class="step" id="step4">
+                    <div class="step-circle">4</div>
+                    <span class="step-label">المعاينة</span>
+                </div>
+            </div>
+
+            <!-- Step 1: Input Text or Image -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-keyboard"></i>
+                    أدخل النص أو ارفع صورة
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">اختر نوع الإدخال:</label>
+                    <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="radio" name="inputType" value="text" checked onchange="toggleInputType()">
+                            <span>نص</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="radio" name="inputType" value="image" onchange="toggleInputType()">
+                            <span>صورة</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="textInputSection">
+                    <div class="form-group">
+                        <label class="form-label">وصف الفيديو المطلوب:</label>
+                        <textarea class="form-textarea" id="videoText" placeholder="اكتب وصف الفيديو هنا... مثال: فيديو ترويجي لمنتج عناية بالبشرة يركز على الفوائد الطبيعية والنتائج المذهلة"></textarea>
+                    </div>
+                </div>
+
+                <div id="imageInputSection" style="display: none;">
+                    <div class="upload-area" onclick="document.getElementById('imageUpload').click()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>اضغط لرفع صورة المنتج</p>
+                        <input type="file" id="imageUpload" accept="image/*" onchange="handleImageUpload(event)">
+                    </div>
+                    <div class="image-preview" id="imagePreview">
+                        <img id="previewImg" src="" alt="معاينة الصورة">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Settings -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-sliders-h"></i>
+                    إعدادات الفيديو
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">مدة الفيديو:</label>
+                    <div class="duration-selector">
+                        <div class="duration-option" onclick="selectDuration(this, 1)">1 دقيقة</div>
+                        <div class="duration-option" onclick="selectDuration(this, 2)">2 دقيقة</div>
+                        <div class="duration-option active" onclick="selectDuration(this, 3)">3 دقائق</div>
+                        <div class="duration-option" onclick="selectDuration(this, 4)">4 دقائق</div>
+                        <div class="duration-option" onclick="selectDuration(this, 5)">5 دقائق</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">نمط الفيديو:</label>
+                    <select class="form-select" id="videoStyle">
+                        <option value="professional">احترافي تجاري</option>
+                        <option value="modern">عصري ديناميكي</option>
+                        <option value="minimalist">بسيط أنيق</option>
+                        <option value="luxury">فاخر راقٍ</option>
+                        <option value="creative">إبداعي فريد</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">اللغة:</label>
+                    <select class="form-select" id="videoLanguage">
+                        <option value="ar">العربية</option>
+                        <option value="en">الإنجليزية</option>
+                        <option value="fr">الفرنسية</option>
+                        <option value="es">الإسبانية</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">دقة الفيديو:</label>
+                    <select class="form-select" id="videoQuality">
+                        <option value="1080">Full HD (1080p)</option>
+                        <option value="720">HD (720p)</option>
+                        <option value="4k">4K Ultra HD</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Generate Button -->
+            <div style="text-align: center; margin: 30px 0;">
+                <button class="btn btn-generate pulse" onclick="generateVideo()">
+                    <i class="fas fa-wand-magic-sparkles"></i>
+                    إنشاء الفيديو بالذكاء الاصطناعي
+                </button>
+            </div>
+
+            <!-- Video Preview -->
+            <div class="card" id="previewCard" style="display: none;">
+                <div class="card-title">
+                    <i class="fas fa-eye"></i>
+                    معاينة الفيديو
+                </div>
+                
+                <div class="video-preview-container">
+                    <div class="video-canvas" id="videoCanvas">
+                        <div class="video-content" id="videoContent">
+                            <h2 id="previewTitle">عنوان الفيديو</h2>
+                            <p id="previewText">وصف الفيديو سيظهر هنا</p>
+                        </div>
+                        <div class="video-timer">
+                            <span class="timer-display" id="currentTime">00:00</span>
+                            <span class="timer-display" id="totalTime">03:00</span>
+                        </div>
+                    </div>
+
+                    <div class="video-controls">
+                        <button class="control-btn" style="background: var(--gradient-1); color: white;" onclick="playVideo()">
+                            <i class="fas fa-play"></i> تشغيل
+                        </button>
+                        <button class="control-btn" style="background: var(--gradient-2); color: white;" onclick="pauseVideo()">
+                            <i class="fas fa-pause"></i> إيقاف
+                        </button>
+                        <button class="control-btn" style="background: linear-gradient(135deg, #4ECDC4, #44bd9e); color: white;" onclick="restartVideo()">
+                            <i class="fas fa-redo"></i> إعادة
+                        </button>
+                        <button class="control-btn" style="background: linear-gradient(135deg, #f093fb, #f5576c); color: white;" onclick="downloadVideo()">
+                            <i class="fas fa-download"></i> تحميل
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Prompts Library -->
+        <div id="prompts" class="tab-content">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-book-open"></i>
+                    مكتبة البرومبتات الجاهزة
+                </div>
+
+                <div class="category-filters">
+                    <button class="filter-btn active" onclick="filterPrompts('all', this)">الكل</button>
+                    <button class="filter-btn" onclick="filterPrompts('beauty', this)">العناية بالبشرة</button>
+                    <button class="filter-btn" onclick="filterPrompts('tech', this)">التكنولوجيا</button>
+                    <button class="filter-btn" onclick="filterPrompts('food', this)">الأغذية</button>
+                    <button class="filter-btn" onclick="filterPrompts('fashion', this)">الأزياء</button>
+                    <button class="filter-btn" onclick="filterPrompts('real-estate', this)">العقارات</button>
+                    <button class="filter-btn" onclick="filterPrompts('education', this)">التعليم</button>
+                </div>
+
+                <div class="prompts-grid" id="promptsGrid">
+                    <!-- Prompts will be loaded by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Music Library -->
+        <div id="music" class="tab-content">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-headphones"></i>
+                    المكتبة الصوتية المجانية
+                </div>
+
+                <div class="category-filters">
+                    <button class="filter-btn active" onclick="filterMusic('all', this)">الكل</button>
+                    <button class="filter-btn" onclick="filterMusic('upbeat', this)">نشيط</button>
+                    <button class="filter-btn" onclick="filterMusic('calm', this)">هادئ</button>
+                    <button class="filter-btn" onclick="filterMusic('epic', this)">ملحمي</button>
+                    <button class="filter-btn" onclick="filterMusic('corporate', this)">شركات</button>
+                    <button class="filter-btn" onclick="filterMusic('emotional', this)">عاطفي</button>
+                </div>
+
+                <div class="music-grid" id="musicGrid">
+                    <!-- Music items will be loaded by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: Saved Videos -->
+        <div id="saved" class="tab-content">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-film"></i>
+                    الفيديوهات المحفوظة
+                </div>
+
+                <div id="savedVideosList" class="saved-videos-list">
+                    <!-- Saved videos will be loaded here -->
+                </div>
+
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <i class="fas fa-folder-open"></i>
+                    <h3>لا توجد فيديوهات محفوظة</h3>
+                    <p>ابدأ بإنشاء فيديو جديد واحفظه</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 5: Settings -->
+        <div id="settings" class="tab-content">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-cog"></i>
+                    إعدادات التطبيق
+                </div>
+
+                <div class="settings-grid">
+                    <div class="setting-item">
+                        <span>الوضع الداكن</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <span>تشغيل تلقائي للصوت</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <span>إظهار المؤشر الزمني</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <span>تأثيرات الحركة</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <span>جودة عالية افتراضياً</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <span>حفظ تلقائي</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-info-circle"></i>
+                    معلومات التطبيق
+                </div>
+                <p style="line-height: 2;">
+                    <strong>الإصدار:</strong> 1.0.0<br>
+                    <strong>التطوير:</strong> NoTrack AI<br>
+                    <strong>التراخيص:</strong> مجاني للاستخدام الشخصي والتجاري<br>
+                    <strong>الدعم:</strong> متاح 24/7
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p class="loading-text">جاري إنشاء الفيديو بالذكاء الاصطناعي...</p>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ===== DATA =====
+        
+        const promptsData = [
+            {
+                id: 1,
+                category: 'beauty',
+                title: 'برومبت منتج عناية بالبشرة',
+                text: 'Create a stunning promotional video for a luxury skincare product. Show close-up shots of the bottle with soft lighting, water droplets on glass, and smooth transitions between before/after results. Use elegant typography for the brand name. Background should feature natural elements like flowers and leaves. The mood is sophisticated, clean, and aspirational. Include testimonials overlay with star ratings.',
+                tags: ['العناية', 'البشرة', 'منتجات']
+            },
+            {
+                id: 2,
+                category: 'tech',
+                title: 'برومبت منتج تقني',
+                text: 'Generate a dynamic tech product showcase video. Start with a sleek unboxing sequence, then demonstrate key features with animated icons and smooth camera movements. Use dark background with neon accents. Include spec highlights appearing as floating text. End with a call-to-action button animation. Style: modern, futuristic, clean UI design.',
+                tags: ['تكنولوجيا', 'إلكترونيات', 'منتجات']
+            },
+            {
+                id: 3,
+                category: 'food',
+                title: 'برومبت منتج غذائي',
+                text: 'Produce an appetizing food product video. Feature slow-motion shots of the product being prepared and served. Use warm lighting to enhance colors. Show fresh ingredients transforming into the final dish. Add steam effects and texture close-ups. Include customer satisfaction reactions. Background music should be upbeat and cheerful. Color palette: warm oranges, greens, and whites.',
+                tags: ['أغذية', 'طعام', 'مشروبات']
+            },
+            {
+                id: 4,
+                category: 'fashion',
+                title: 'برومبت أزياء وملابس',
+                text: 'Create a fashion-forward clothing promo video. Model the outfit in various settings - urban street, studio with dramatic lighting, outdoor nature scene. Use quick cuts synced to music beats. Showcase fabric texture and movement. Include size guide overlay and color options. End with model walking away confidently. Style: trendy, editorial, high-fashion magazine feel.',
+                tags: ['أزياء', 'ملابس', 'موضة']
+            },
+            {
+                id: 5,
+                category: 'real-estate',
+                title: 'برومبت عقارات',
+                text: 'Design a premium real estate tour video. Begin with aerial drone footage of the property exterior, then smoothly transition to interior walkthrough. Highlight key rooms with smooth camera pans. Include floor plan overlay and amenity icons. Use golden hour lighting for exterior shots. End with contact information and virtual tour QR code. Mood: luxurious, welcoming, spacious.',
+                tags: ['عقارات', 'منازل', 'فلل']
+            },
+            {
+                id: 6,
+                category: 'education',
+                title: 'برومبت تعليمي',
+                text: 'Build an engaging educational course promo video. Start with a hook question on screen, then show student success stories and learning outcomes. Use animated infographics to explain key concepts. Include instructor introduction with credentials. Display course modules as interactive cards. End with enrollment CTA and discount badge. Style: clean, professional, inspiring.',
+                tags: ['تعليم', 'دورات', 'تدريب']
+            },
+            {
+                id: 7,
+                category: 'beauty',
+                title: 'برومبت مستحضرات تجميل',
+                text: 'Make a vibrant cosmetics product video. Show swatches of different shades on skin, close-up of eye makeup application, lip gloss shine effect. Use bright, colorful backgrounds that complement the products. Include transformation timelapse. Add sparkle and glow effects. Feature diverse models showcasing each shade. Music: upbeat pop track.',
+                tags: ['مكياج', 'تجميل', 'ألوان']
+            },
+            {
+                id: 8,
+                category: 'tech',
+                title: 'برومبت تطبيق جوال',
+                text: 'Develop an app promotion video showing phone mockups with the app interface. Demonstrate key features through screen recordings with finger tap animations. Use clean white background with app logo watermark. Include download buttons for App Store and Google Play. Show user reviews stars. End with tagline animation. Style: minimalist, modern, user-friendly.',
+                tags: ['تطبيقات', 'جوّال', 'برمجيات']
+            }
+        ];
+
+        const musicData = [
+            {
+                id: 1,
+                title: 'نبض النجاح',
+                artist: 'NoTrack Studio',
+                genre: 'upbeat',
+                duration: '2:30',
+                url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+                icon: 'fa-bolt'
+            },
+            {
+                id: 2,
+                title: 'هدوء البحر',
+                artist: 'Ambient Waves',
+                genre: 'calm',
+                duration: '3:15',
+                url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+                icon: 'fa-water'
+            },
+            {
+                id: 3,
+                title: 'انتصار الملوك',
+                artist: 'Epic Sounds',
+                genre: 'epic',
+                duration: '4:00',
+                url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+                icon: 'fa-crown'
+            },
+            {
+                id: 4,
+                title: 'اجتماع الشركات',
+                artist: 'Corporate Beats',
+                genre: 'corporate',
+                duration: '2:45',
+                url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+                icon: 'fa-building'
+            },
+            {
+                id: 5,
+                title: 'ذكريات جميلة',
+                artist: 'Emotional Tunes',
+                genre: 'emotional',
+                duration: '3:30',
+                url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3',
+                icon: 'fa-heart'
+            },
+            {
+                id: 6,
+                title: 'طاقة إيجابية',
+                artist: 'Positive Vibes',
+                genre: 'upbeat',
+                duration: '2:20',
+                url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3',
+                icon: 'fa-sun'
+            },
+            {
+                id: 7,
+                title: 'ليل هادئ',
+                artist: 'Night Serenity',
+                genre: 'calm',
+                duration: '4:10',
+                url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3',
+                icon: 'fa-moon'
+            },
+            {
+                id: 8,
+                title: 'قوة الإرادة',
+                artist: 'Motivation Mix',
+                genre: 'epic',
+                duration: '3:45',
+                url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3',
+                icon: 'fa-fire'
+            }
+        ];
+
+        let savedVideos = JSON.parse(localStorage.getItem('savedVideos') || '[]');
+        let currentDuration = 3;
+        let currentMusicId = null;
+        let audioElement = null;
+        let isPlaying = false;
+        let videoProgress = 0;
+        let videoInterval = null;
+
+        // ===== INITIALIZATION =====
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            renderPrompts();
+            renderMusic();
+            renderSavedVideos();
+        });
+
+        // ===== TAB SWITCHING =====
+        
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.closest('.tab-btn').classList.add('active');
+        }
+
+        // ===== INPUT TYPE TOGGLE =====
+        
+        function toggleInputType() {
+            const inputType = document.querySelector('input[name="inputType"]:checked').value;
+            
+            if (inputType === 'text') {
+                document.getElementById('textInputSection').style.display = 'block';
+                document.getElementById('imageInputSection').style.display = 'none';
+            } else {
+                document.getElementById('textInputSection').style.display = 'none';
+                document.getElementById('imageInputSection').style.display = 'block';
+            }
+        }
+
+        // ===== IMAGE UPLOAD =====
+        
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewImg').src = e.target.result;
+                    document.getElementById('imagePreview').style.display = 'block';
+                    showToast('تم رفع الصورة بنجاح!');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // ===== DURATION SELECTOR =====
+        
+        function selectDuration(element, minutes) {
+            document.querySelectorAll('.duration-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            element.classList.add('active');
+            currentDuration = minutes;
+            updateTimerDisplay(minutes);
+        }
+
+        function updateTimerDisplay(minutes) {
+            const totalSeconds = minutes * 60;
+            const minutesStr = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+            const secondsStr = String(totalSeconds % 60).padStart(2, '0');
+            document.getElementById('totalTime').textContent = `${minutesStr}:${secondsStr}`;
+        }
+
+        // ===== RENDER PROMPTS =====
+        
+        function renderPrompts(filter = 'all') {
+            const grid = document.getElementById('promptsGrid');
+            const filtered = filter === 'all' ? promptsData : promptsData.filter(p => p.category === filter);
+            
+            grid.innerHTML = filtered.map(prompt => `
+                <div class="prompt-card" data-category="${prompt.category}">
+                    <div class="prompt-header">
+                        <span class="prompt-category">${getCategoryLabel(prompt.category)}</span>
+                        <div class="prompt-actions">
+                            <button class="btn-edit" onclick="editPrompt(${prompt.id})">
+                                <i class="fas fa-edit"></i> تعديل
+                            </button>
+                            <button class="btn-delete" onclick="deletePrompt(${prompt.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <button class="btn-save" onclick="usePrompt(${prompt.id})">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="prompt-text">
+                        <textarea id="prompt-${prompt.id}" onchange="updatePrompt(${prompt.id}, this.value)">${prompt.text}</textarea>
+                    </div>
+                    <div style="margin-top: 10px; display: flex; gap: 5px; flex-wrap: wrap;">
+                        ${prompt.tags.map(tag => `<span class="badge badge-free">${tag}</span>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getCategoryLabel(category) {
+            const labels = {
+                'beauty': 'العناية بالبشرة',
+                'tech': 'التكنولوجيا',
+                'food': 'الأغذية',
+                'fashion': 'الأزياء',
+                'real-estate': 'العقارات',
+                'education': 'التعليم'
+            };
+            return labels[category] || category;
+        }
+
+        function filterPrompts(category, btn) {
+            document.querySelectorAll('#prompts .filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderPrompts(category);
+        }
+
+        function editPrompt(id) {
+            const textarea = document.getElementById(`prompt-${id}`);
+            textarea.focus();
+            showToast('يمكنك الآن تعديل البرومبت');
+        }
+
+        function deletePrompt(id) {
+            const index = promptsData.findIndex(p => p.id === id);
+            if (index > -1) {
+                promptsData.splice(index, 1);
+                renderPrompts();
+                showToast('تم حذف البرومبت');
+            }
+        }
+
+        function usePrompt(id) {
+            const prompt = promptsData.find(p => p.id === id);
+            if (prompt) {
+                document.getElementById('videoText').value = prompt.text;
+                switchTab('create');
+                document.querySelector('.tab-btn').click();
+                showToast('تم نسخ البرومبت إلى المحرر');
+            }
+        }
+
+        function updatePrompt(id, newText) {
+            const prompt = promptsData.find(p => p.id === id);
+            if (prompt) {
+                prompt.text = newText;
+            }
+        }
+
+        // ===== RENDER MUSIC =====
+        
+        function renderMusic(filter = 'all') {
+            const grid = document.getElementById('musicGrid');
+            const filtered = filter === 'all' ? musicData : musicData.filter(m => m.genre === filter);
+            
+            grid.innerHTML = filtered.map(music => `
+                <div class="music-card" data-genre="${music.genre}">
+                    <div class="music-info">
+                        <div class="music-icon">
+                            <i class="fas ${music.icon}"></i>
+                        </div>
+                        <div class="music-details">
+                            <h4>${music.title}</h4>
+                            <p>${music.artist} • ${music.duration}</p>
+                        </div>
+                        <span class="badge badge-free">مجاني</span>
+                    </div>
+                    <div class="music-player">
+                        <button class="play-btn" onclick="toggleMusicPlay(${music.id})">
+                            <i class="fas fa-play" id="play-icon-${music.id}"></i>
+                        </button>
+                        <div class="progress-bar" onclick="seekMusic(event, ${music.id})">
+                            <div class="progress-fill" id="progress-${music.id}"></div>
+                        </div>
+                        <input type="range" class="volume-control" min="0" max="100" value="80" onchange="setVolume(${music.id}, this.value)">
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterMusic(genre, btn) {
+            document.querySelectorAll('#music .filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderMusic(genre);
+        }
+
+        function toggleMusicPlay(id) {
+            if (audioElement && audioElement.dataset.musicId == id) {
+                if (isPlaying) {
+                    audioElement.pause();
+                    isPlaying = false;
+                    document.getElementById(`play-icon-${id}`).className = 'fas fa-play';
+                } else {
+                    audioElement.play();
+                    isPlaying = true;
+                    document.getElementById(`play-icon-${id}`).className = 'fas fa-pause';
+                }
+            } else {
+                if (audioElement) {
+                    audioElement.pause();
+                }
+                audioElement = new Audio(getMusicUrl(id));
+                audioElement.dataset.musicId = id;
+                audioElement.volume = 0.8;
+                audioElement.play();
+                isPlaying = true;
+                document.getElementById(`play-icon-${id}`).className = 'fas fa-pause';
+                
+                audioElement.addEventListener('timeupdate', () => {
+                    const progress = (audioElement.currentTime / audioElement.duration) * 100;
+                    const progressBar = document.getElementById(`progress-${id}`);
+                    if (progressBar) progressBar.style.width = progress + '%';
+                });
+
+                audioElement.addEventListener('ended', () => {
+                    isPlaying = false;
+                    document.getElementById(`play-icon-${id}`).className = 'fas fa-play';
+                    document.getElementById(`progress-${id}`).style.width = '0%';
+                });
+            }
+        }
+
+        function getMusicUrl(id) {
+            const music = musicData.find(m => m.id === id);
+            return music ? music.url : '';
+        }
+
+        function seekMusic(event, id) {
+            if (!audioElement) return;
+            const rect = event.currentTarget.getBoundingClientRect();
+            const clickX = event.clientX - rect.left;
+            const width = rect.width;
+            const percent = clickX / width;
+            audioElement.currentTime = percent * audioElement.duration;
+        }
+
+        function setVolume(id, value) {
+            if (audioElement) {
+                audioElement.volume = value / 100;
+            }
+        }
+
+        // ===== VIDEO GENERATION =====
+        
+        function generateVideo() {
+            const loading = document.getElementById('loadingOverlay');
+            loading.classList.add('active');
+
+            // Simulate AI processing
+            setTimeout(() => {
+                loading.classList.remove('active');
+                
+                // Update preview
+                const text = document.getElementById('videoText').value || 'فيديو دعائي احترافي';
+                const title = text.substring(0, 50) + (text.length > 50 ? '...' : '');
+                
+                document.getElementById('previewTitle').textContent = title;
+                document.getElementById('previewText').textContent = text;
+                document.getElementById('previewCard').style.display = 'block';
+                
+                // Update steps
+                document.getElementById('step1').classList.add('completed');
+                document.getElementById('step2').classList.add('completed');
+                document.getElementById('step3').classList.add('completed');
+                document.getElementById('step4').classList.add('active');
+                
+                updateTimerDisplay(currentDuration);
+                showToast('تم إنشاء الفيديو بنجاح! 🎬');
+            }, 3000);
+        }
+
+        // ===== VIDEO CONTROLS =====
+        
+        function playVideo() {
+            if (videoInterval) return;
+            
+            videoProgress = 0;
+            const totalSeconds = currentDuration * 60;
+            
+            videoInterval = setInterval(() => {
+                videoProgress += 1;
+                const minutes = Math.floor(videoProgress / 60);
+                const seconds = videoProgress % 60;
+                document.getElementById('currentTime').textContent = 
+                    `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                
+                if (videoProgress >= totalSeconds) {
+                    clearInterval(videoInterval);
+                    videoInterval = null;
+                }
+            }, 1000);
+            
+            showToast('▶ يتم تشغيل الفيديو');
+        }
+
+        function pauseVideo() {
+            if (videoInterval) {
+                clearInterval(videoInterval);
+                videoInterval = null;
+                showToast('⏸ تم إيقاف الفيديو');
+            }
+        }
+
+        function restartVideo() {
+            pauseVideo();
+            videoProgress = 0;
+            document.getElementById('currentTime').textContent = '00:00';
+            showToast('🔄 تم إعادة التشغيل');
+        }
+
+        // ===== SAVE & DOWNLOAD =====
+        
+        function saveVideo() {
+            const text = document.getElementById('videoText').value || 'فيديو بدون عنوان';
+            const style = document.getElementById('videoStyle').value;
+            const language = document.getElementById('videoLanguage').value;
+            const quality = document.getElementById('videoQuality').value;
+            
+            const videoData = {
+                id: Date.now(),
+                title: text.substring(0, 50),
+                fullText: text,
+                style: style,
+                language: language,
+                quality: quality,
+                duration: currentDuration,
+                date: new Date().toLocaleDateString('ar-SA'),
+                thumbnail: `video-${Date.now()}.png`
+            };
+            
+            savedVideos.unshift(videoData);
+            localStorage.setItem('savedVideos', JSON.stringify(savedVideos));
+            renderSavedVideos();
+            showToast('✅ تم حفظ الفيديو بنجاح!');
+        }
+
+        function renderSavedVideos() {
+            const list = document.getElementById('savedVideosList');
+            const empty = document.getElementById('emptyState');
+            
+            if (savedVideos.length === 0) {
+                list.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+            
+            empty.style.display = 'none';
+            list.innerHTML = savedVideos.map(video => `
+                <div class="saved-video-item">
+                    <div class="saved-video-thumb">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <div class="saved-video-info">
+                        <h4>${video.title}</h4>
+                        <p>
+                            <i class="fas fa-clock"></i> ${video.duration} دقيقة | 
+                            <i class="fas fa-language"></i> ${getLanguageLabel(video.language)} | 
+                            <i class="fas fa-calendar"></i> ${video.date}
+                        </p>
+                        <div style="display: flex; gap: 8px; margin-top: 10px;">
+                            <button class="btn-edit" onclick="loadSavedVideo(${video.id})">
+                                <i class="fas fa-edit"></i> تعديل
+                            </button>
+                            <button class="btn-download" onclick="downloadSavedVideo(${video.id})">
+                                <i class="fas fa-download"></i> تحميل
+                            </button>
+                            <button class="btn-delete" onclick="deleteSavedVideo(${video.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getLanguageLabel(code) {
+            const languages = {
+                'ar': 'العربية',
+                'en': 'الإنجليزية',
+                'fr': 'الفرنسية',
+                'es': 'الإسبانية'
+            };
+            return languages[code] || code;
+        }
+
+        function loadSavedVideo(id) {
+            const video = savedVideos.find(v => v.id === id);
+            if (video) {
+                document.getElementById('videoText').value = video.fullText;
+                showToast('تم تحميل الفيديو المحفوظ');
+            }
+        }
+
+        function downloadSavedVideo(id) {
+            const video = savedVideos.find(v => v.id === id);
+            if (video) {
+                const blob = new Blob([JSON.stringify(video, null, 2)], {type: 'application/json'});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `video-${video.id}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast('✅ تم تحميل الفيديو');
+            }
+        }
+
+        function deleteSavedVideo(id) {
+            const index = savedVideos.findIndex(v => v.id === id);
+            if (index > -1) {
+                savedVideos.splice(index, 1);
+                localStorage.setItem('savedVideos', JSON.stringify(savedVideos));
+                renderSavedVideos();
+                showToast('🗑️ تم حذف الفيديو');
+            }
+        }
+
+        function downloadVideo() {
+            const text = document.getElementById('videoText').value || 'فيديو دعائي';
+            const content = `
+=== صانع الفيديو الذكي - تصدير الفيديو ===
+${'='.repeat(50)}
+
+العنوان: ${text.substring(0, 100)}
+المدة: ${currentDuration} دقيقة
+النمط: ${document.getElementById('videoStyle').value}
+اللغة: ${document.getElementById('videoLanguage').value}
+الجودة: ${document.getElementById('videoQuality').value}p
+
+${'='.repeat(50)}
+تم الإنشاء بواسطة NoTrack AI Video Maker
+التاريخ: ${new Date().toLocaleDateString('ar-SA')}
+            `.trim();
+            
+            const blob = new Blob([content], {type: 'text/plain;charset=utf-8'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `video-${Date.now()}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showToast('✅ تم تحميل الفيديو بنجاح!');
+        }
+
+        // ===== TOAST NOTIFICATION =====
+        
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ===== GITHUB DEPLOY INFO =====
+        
+        console.log('%c🎬 صانع الفيديو الذكي - AI Video Maker', 'font-size: 20px; font-weight: bold; color: #6C63FF;');
+        console.log('%cالإصدار: 1.0.0 | تطوير: NoTrack AI', 'font-size: 14px; color: #4ECDC4;');
+        console.log('%cللتحميل على GitHub:', 'font-size: 14px; font-weight: bold; color: #FF6B6B;');
+        console.log('1. أنشئ مستودعاً جديداً على GitHub');
+        console.log('2. ارفع ملف index.html');
+        console.log('3. فعّل GitHub Pages من الإعدادات');
+        console.log('4. ستصبح الرابط: https://yourusername.github.io/repo-name/');
+    </script>
+
+</body>
+</html>
